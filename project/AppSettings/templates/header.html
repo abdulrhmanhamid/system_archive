@@ -1,0 +1,32 @@
+<!-- templates/layout/header.html -->
+<header class="app-header d-flex align-items-center justify-content-between px-3 py-2 bg-primary text-white shadow-sm" style="min-height: 70px;">
+
+    <!-- زر القائمة الجانبية (للعرض الصغير فقط) -->
+    <button class="btn d-md-none me-2" onclick="toggleSidebar()">
+        <i class="fas fa-bars text-white fs-4"></i>
+    </button>
+
+    <!-- رسالة الترحيب -->
+    <div class="d-none d-md-block">
+        {% if request.session.employee_name %}
+            <span class="fw-semibold">مرحباً، {{ request.session.employee_name }}</span>
+        {% endif %}
+    </div>
+
+    <!-- اسم النظام (منتصف الهيدر) -->
+    <div class="text-center flex-grow-1">
+        
+        <h5 class="m-0 fw-bold">{{ system_settings.system_name|default:"نظام الأرشيف" }}</h5>
+    </div>
+
+    <!-- شعار النظام -->
+    <div class="position-relative" style="width: 60px; height: 60px;">
+        <img id="logoImage"
+             src="{% if system_settings.logo %}{{ system_settings.logo.url }}{% else %}/placeholder.svg{% endif %}"
+             alt="شعار النظام"
+             class="img-fluid rounded-circle border border-white clickable-logo"
+             title="انقر لتغيير الشعار"
+             style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;">
+        <input type="file" id="logoFileInput" accept="image/*" style="display: none;">
+    </div>
+</header>

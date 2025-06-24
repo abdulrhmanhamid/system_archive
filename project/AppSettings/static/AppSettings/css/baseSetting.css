@@ -1,0 +1,39 @@
+
+        /* تحكم في إخفاء القائمة الجانبية للشاشات الصغيرة فقط */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 75%;
+                background-color: #343a40;
+                z-index: 1050;
+                padding: 1rem;
+            }
+            .sidebar.show {
+                display: block;
+            }
+        }
+
+        .toggle-sidebar-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .sidebar-header h2 {
+            color: white;
+        }
+
+        .sidebar-menu .nav-link {
+            color: #ddd;
+        }
+
+        .sidebar-menu .nav-link:hover {
+            color: #fff;
+        }
+    

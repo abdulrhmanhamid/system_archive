@@ -1,0 +1,147 @@
+{% extends 'baseSetting.html'%} 
+ {% block manage_stamp%}
+ {% load static %}
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="{% static 'AppSettings/css/add_stamp_style.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'AppSettings/css/button.css'%}">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+  <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+  <div class="main-box">
+    <div class="section-header">
+      عرض الختم 
+    </div>
+    <div class="doc-count">
+    <span id="docCount">{{ stamps|length }}</span>    </div>
+
+    
+  
+  <table id="documentsTable">
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>نوع الختم</th>
+      <th>صورة الختم</th>
+      <th>اختيار </th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for stamp in stamps %}
+    <tr>
+      <td>{{ stamp.id }}</td>
+      <td>{{ stamp.stamp_type }}</td>
+     <td>
+  {% if stamp.stamp_image %}
+    <a href="{% url 'AppSettings:show_stamp_image' stamp.id %}" target="_blank">عرض</a>
+  {% else %}
+    لا يوجد
+  {% endif %}
+</td>
+
+      <td class="radio-cell">
+        <input type="radio" name="selectDoc" value="{{ stamp.id }}">
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="8">لا توجد بيانات</td></tr>
+  {% endfor %}
+</tbody>
+
+    </table>
+
+    <div class="buttons">
+      <button class="button" onclick="editDocument()">✏️ تعديل</button>
+    <button class="button" onclick="deleteDocument()">🗑️ حذف</button>
+    </div>
+  </div>
+
+  <script>
+   function deleteDocument() {
+  const selectedRadio = document.querySelector('input[name="selectDoc"]:checked');
+  if (!selectedRadio) {
+    alert("يرجى تحديد ختم أولاً للحذف.");
+    return;
+  }
+
+  const stampId = selectedRadio.value;
+
+  if (!confirm("هل أنت متأكد من حذف هذا الختم؟")) {
+    return;
+  }
+
+  fetch(`/appsettings/delete_stamp/${stampId}/`, {
+   method: 'POST',
+  headers: {
+    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value,
+  }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // حذف الصف من الجدول مباشرة بدون تحديث كامل
+      selectedRadio.closest('tr').remove();
+const docCountElem = document.getElementById("docCount");
+docCountElem.textContent = Number(docCountElem.textContent) - 1;
+      alert("تم حذف الختم بنجاح.");
+    } else {
+      alert("فشل الحذف.");
+    }
+  })
+  .catch(error => {
+    console.error("خطأ أثناء الحذف:", error);
+    alert("حدث خطأ غير متوقع.");
+  });
+
+}
+
+
+function editDocument() {
+  const selectedRadio = document.querySelector('input[name="selectDoc"]:checked');
+  if (!selectedRadio) {
+    alert("يرجى تحديد ختم أولاً للتعديل.");
+    return;
+  }
+
+  const stampId = selectedRadio.value;
+  // الانتقال إلى صفحة التعديل مع ID
+  window.location.href = `/appsettings/edit_stamp/${stampId}/`;
+}
+
+function printPage() {
+  const selectedRadio = document.querySelector('input[name="selectDoc"]:checked');
+  if (!selectedRadio) {
+    alert("يرجى تحديد وثيقة أولاً قبل الطباعة.");
+    return;
+  }
+
+  const row = selectedRadio.closest("tr");
+  const imageCell = row.querySelector("td:nth-child(7) a");
+
+  if (imageCell && imageCell.href) {
+    const imageURL = imageCell.href;
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(`
+      <html dir="rtl"><head><title>طباعة الوثيقة</title></head><body>
+      <img src="${imageURL}" style="max-width:100%;height:auto;">
+      </body></html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  } else {
+    alert("لا توجد صورة لهذه الوثيقة.");
+  }
+}
+
+
+</script>
+
+
+
+</body>
+{% endblock manage_stamp%}

@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% block edit_stamp %}
+{% load static %}
+
+<head>
+  <meta charset="UTF-8">
+  <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="{% static 'AppOfDocuments/css/export.css' %}" type="text/css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+  <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+  <main class="content">
+    <div class="form-container">
+      <h2 class="form-title">تعديل ختم</h2>
+
+      <div class="form-right">
+        <input type="file" id="stampImageInput" accept="image/*" style="display: none;" onchange="previewImage(event)">
+
+        <div class="form-group">
+          <input id="typestamps" class="input-field" placeholder="نوع الختم" value="{{ stamp.stamp_type }}">
+          <div id="dropdownList" class="dropdown-list"></div>
+        </div>
+
+        <div class="upload-buttons">
+          <button class="upload-btn" onclick="">
+            <i class="fas fa-scanner"></i>
+            عرض
+          </button>
+          <button class="upload-btn" onclick="uploadStampImage()">
+            <i class="fas fa-file-upload"></i>
+            رفع وثيقة
+          </button>
+        </div>
+
+        <button class="save-btn" onclick="saveupdate()" > حفظ التعديلات</button>
+      </div>
+
+      <div class="form-left">
+        <div class="image-upload" id="imageUpload">
+          {% if image_base64 %}
+            <img src="data:image/png;base64,{{ image_base64 }}" style="max-width:100%; max-height:100%;">
+          {% else %}
+            <p>لا توجد صورة</p>
+          {% endif %}
+                      <canvas id="canvas" style="max-width:100%; max-height:100%;"></canvas>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+  <script>
+let selectedImageFile = null;
+ const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let currentStampImage = new Image();
+
+    function uploadStampImage() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/png,';
+
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            currentStampImage = new Image();
+            currentStampImage.onload = function () {
+              canvas.width = currentStampImage.width;
+              canvas.height = currentStampImage.height;
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              ctx.drawImage(currentStampImage, 0, 0);
+            };
+            currentStampImage.src = event.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+      input.click();
+    }
+
+
+function previewImage(event) {
+  const file = event.target.files[0];
+  if (file) {
+    selectedImageFile = file;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const imageUpload = document.getElementById("imageUpload");
+      imageUpload.innerHTML = `<img src="${e.target.result}" style="max-width:100%; max-height:100%;">`;
+    };
+    reader.readAsDataURL(file);
+  }
+}
+function uploadStampImage() {
+  document.getElementById("stampImageInput").click();
+}
+
+function saveupdate() {
+  const stampType = document.getElementById("typestamps").value;
+  const stampId = "{{ stamp.id }}";
+  const formData = new FormData();
+  formData.append("stamp_type", stampType);
+
+  if (selectedImageFile) {
+    formData.append("stamp_image", selectedImageFile);
+  }
+
+  fetch(`/documents/edit_stamp/${stampId}/`, {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+    },
+    body: formData,
+  })
+  .then(response => {
+    if (response.ok) {
+      alert("تم حفظ التعديلات بنجاح");
+    } else {
+      alert("حدث خطأ أثناء الحفظ");
+    }
+  });
+}
+
+
+</script>
+
+</body>
+{% endblock edit_stamp %}

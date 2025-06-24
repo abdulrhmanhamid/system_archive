@@ -1,0 +1,136 @@
+{% extends 'baseSetting.html' %}
+
+{% block user_management %}
+{% load static %}
+
+<head>
+  <meta charset="UTF-8">
+  <title>إدارة المستخدم</title>
+  <link rel="stylesheet" href="{% static 'AppSettings/css/user_management_style.css' %}">
+</head>
+<body>
+
+<div class="main">
+  <div class="content">
+    <h2>إدارة المستخدم</h2>
+    <div class="actions">
+      <button onclick="window.location.href='/appsettings/add_user/'">إضافة مستخدم جديد</button>
+    </div>
+
+    <div class="search-box">
+      <form method="GET" action="{% url 'AppSettings:user_management' %}" id="search-form">
+        <input type="text" name="search" placeholder="بحث ..." value="{{ search_query }}" id="search-input" autocomplete="off">
+      </form>
+    </div>
+
+    <div id="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>المعرف</th>
+            <th>الاسم الرباعي</th>
+            <th>رقم الجوال</th>
+            <th>اسم المستخدم</th>
+            <th>كلمه المرور</th>
+            <th>الدور</th>
+            <th>تاريخ الإضافة</th>
+            <th>✔️</th>
+          </tr>
+        </thead>
+        <tbody id="user-table">
+          {% if users %}
+            {% for user in users %}
+              <tr>
+                <td>{{ user.id }}</td> 
+                <td>{{ user.full_name }}</td>
+                <td>{{ user.phone_number }}</td>
+                <td>{{ user.username }}</td>
+                <td>••••••••</td>
+                <td>{{ user.role }}</td>
+                <td>-</td>
+                <td><input type="checkbox" name="user_ids" value="{{ user.id }}"></td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr><td colspan="9">لا يوجد مستخدمين مسجلين</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+
+    <form method="POST" action="{% url 'AppSettings:delete_users' %}" id="delete-form">
+      {% csrf_token %}
+      <input type="hidden" name="user_ids" id="user-ids-field">
+      <div class="footer-buttons">
+        <button type="button" onclick="editSelectedUser()">تعديل</button>
+        <button type="button" onclick="deleteSelectedUsers()">حذف</button>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<script src="{% static 'AppSettings/js/user management script.js' %}"></script>
+<script>
+  function editSelectedUser() {
+    const selectedCheckboxes = document.querySelectorAll('input[name="user_ids"]:checked');
+    if (selectedCheckboxes.length !== 1) {
+      alert('الرجاء اختيار مستخدم واحد فقط للتعديل');
+      return;
+    }
+    const userId = selectedCheckboxes[0].value;
+    window.location.href = `/appsettings/edit_user/${userId}/`;
+  }
+
+  function deleteSelectedUsers() {
+    const selectedCheckboxes = document.querySelectorAll('input[name="user_ids"]:checked');
+    if (selectedCheckboxes.length === 0) {
+      alert('الرجاء اختيار مستخدم واحد على الأقل للحذف');
+      return;
+    }
+
+    if (confirm('هل أنت متأكد من حذف المستخدمين المحددين؟')) {
+      const userIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+      document.getElementById('user-ids-field').value = userIds.join(',');
+      document.getElementById('delete-form').submit();
+    }
+  }
+
+  // البحث التلقائي باستخدام AJAX
+  document.getElementById("search-input").addEventListener("input", function() {
+    clearTimeout(this.searchTimeout);
+    const searchInput = this;
+    
+    this.searchTimeout = setTimeout(() => {
+      const searchQuery = searchInput.value;
+      const url = `{% url 'AppSettings:user_management' %}?search=${encodeURIComponent(searchQuery)}`;
+      
+      fetch(url, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.text())
+      .then(html => {
+        // تحليل الرد وإنشاء مستند DOM مؤقت
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        
+        // استخراج الجدول المحدث من الرد
+        const newTable = doc.querySelector('#table-container');
+        
+        // استبدال الجدول الحالي بالجدول المحدث
+        if (newTable) {
+          document.getElementById('table-container').innerHTML = newTable.innerHTML;
+        }
+        
+        // إعادة التركيز إلى حقل البحث
+        searchInput.focus();
+      })
+      .catch(error => console.error('Error:', error));
+    }, 500);
+  });
+</script>
+
+</body>
+{% endblock user_management %}

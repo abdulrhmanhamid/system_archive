@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% block contentmannigemport %}
+{% load static %}
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="{% static 'AppOfDocuments/css/export.css' %}" type="text/css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>عرض الوارد</title>
+</head>
+<body>
+
+  <div class="main-box">
+    <div class="section-header">
+      عرض الوثائق الواردة
+    </div>
+    <div class="doc-count">
+      عدد الوثائق الواردة: <span id="docCount">{{ imports|length }}</span>
+    </div>
+
+    <input type="text" class="search-input" placeholder="بحث من الموضوع، الجهة، التاريخ" id="searchInput" onkeyup="filterTable()">
+
+    <table id="documentsTable" border="1" style="width:100%; border-collapse: collapse;">
+      <thead>
+        <tr>
+          <th>الرقم</th>
+          <th>اسم المستخدم</th>
+          <th>العنوان</th>
+          <th>الجهة</th>
+          <th>التاريخ</th>
+          <th>الملاحظة</th>
+          <th>الوثيقة</th>
+          <th>الإجراءات</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for import in imports %}
+          <tr>
+            <td>{{ import.id }}</td>
+            <td>{{ import.employee.username }}</td>
+            <td>{{ import.document_title }}</td>
+            <td>{{ import.sender }}</td>
+            <td>{{ import.import_date }}</td>
+            <td>{{ import.notes }}</td>
+            <td>
+              {% if import.import_image %}
+                  <a href="{% url 'view_import_image' import.id %}" target="_blank">عرض</a>
+              {% else %}
+                لا يوجد
+              {% endif %}
+            </td>
+            <td>
+              <button onclick="printImportFromRow(this)">🖨️</button>
+              <button onclick="window.location.href='/documents/edite_import/{{ import.id }}/'">✏️</button>
+              <button onclick="deleteImport('{{ import.id }}')">🗑️</button>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="8">لا توجد بيانات</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+<script>
+function filterTable() {
+  const input = document.getElementById('searchInput');
+  const filter = input.value.toLowerCase();
+  const table = document.getElementById('documentsTable');
+  const trs = table.tBodies[0].getElementsByTagName('tr');
+
+  for (let i = 0; i < trs.length; i++) {
+    const tr = trs[i];
+    const text = tr.textContent.toLowerCase();
+    tr.style.display = text.includes(filter) ? '' : 'none';
+  }
+}
+
+// CSRF token من قالب Django (تأكد أن يتم إرساله)
+const csrftoken = '{{ csrf_token }}';
+document.cookie = "csrftoken={{ csrf_token }}";
+
+function deleteImport(importId) {
+    if (confirm("هل أنت متأكد من الحذف؟")) {
+        fetch(`/documents/delete_import/${importId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert("حدث خطأ أثناء الحذف.");
+            }
+        });
+    }
+}
+
+// دالة مساعد للحصول على التوكن
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            if (cookie.trim().startsWith(name + '=')) {
+                cookieValue = decodeURIComponent(cookie.trim().substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+function printImportFromRow(button) {
+  const row = button.closest("tr");
+  const link = row.querySelector("td:nth-child(7) a");
+
+  if (link && link.href) {
+    const printWindow = window.open("", "_blank");
+
+    printWindow.document.write(`
+      <html dir="rtl">
+        <head>
+          <title>طباعة الوثيقة</title>
+          <style>
+            body { text-align: center; margin: 0; padding: 0; }
+            img { max-width: 100%; height: auto; }
+          </style>
+        </head>
+        <body>
+          <img id="printImage" src="${link.href}">
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+
+    printWindow.onload = function () {
+      const image = printWindow.document.getElementById("printImage");
+      if (image.complete) {
+        printWindow.focus();
+        printWindow.print();
+      } else {
+        image.onload = function () {
+          printWindow.focus();
+          printWindow.print();
+        };
+      }
+    };
+
+    printWindow.onafterprint = function () {
+      printWindow.close();
+    };
+  } else {
+    alert("لا توجد صورة لهذه الوثيقة.");
+  }
+}
+
+</script>
+
+</body>
+</html>
+{% endblock contentmannigemport %}

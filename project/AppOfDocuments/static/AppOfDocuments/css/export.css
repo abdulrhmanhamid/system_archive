@@ -1,0 +1,263 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+body {
+  background-color: #f0f2f5;
+  direction: rtl;
+}
+
+.main-container {
+  display: flex;
+  min-height: calc(100vh - 70px);
+}
+.content {
+  flex: 1;
+  padding: 20px;
+}
+.form-container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.form-title {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #2c3e50;
+  width: 100%;
+  border: 2px solid #2980b9;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+}
+.form-right, .form-left {
+  flex: 1;
+  min-width: 300px;
+}
+.form-group {
+  margin-bottom: 15px;
+}
+.input-field {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+.image-upload {
+border: 2px dashed #ddd;
+padding: 30px;
+background-color: white;
+overflow-y: auto;
+min-height: 500px;
+line-height: 2;
+direction: rtl;
+font-size: 16px;
+}
+
+.preview-btn {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.upload-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+ .stamp-view-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.upload-btn {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 15px;
+  cursor: pointer;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+}
+.stamp-btn {
+  background: #2ecc71;
+   border: none;
+  padding: 10px 10px;
+  border-radius: 15px;
+  cursor: pointer;
+  width: 50%;
+  left: 20px;
+  font-size: 16px;
+  justify-content: center;
+  align-items: center;
+   margin-bottom: 30px;
+
+}
+.save-btn {
+  background: #2980b9;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 15px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 15px;
+  transition: background 0.3s;
+}
+.stamp-btn:hover {
+  background: #db5534;
+}
+.save-btn:hover {
+  background: #db5534;
+}
+.upload-btn:hover {
+  background: #db5534;
+}
+
+@media (max-width: 768px) {
+  .form-container {
+    flex-direction: column;
+  }
+  .form-left, .form-right {
+    width: 100%;
+  }
+}
+@keyframes stampAnimation {
+0% {
+transform: scale(0.1) rotate(-20deg);
+opacity: 0;
+}
+50% {
+transform: scale(1.2) rotate(10deg);
+opacity: 0.8;
+}
+100% {
+transform: scale(1) rotate(0deg);
+opacity: 1;
+}
+}
+
+/*  خصائص صفحة manage_export.html*/
+
+body {
+  margin: 0;	
+  font-family: "Tahoma", sans-serif;
+  background-color: #f9f9f9;
+}
+
+.top-header {
+  background: linear-gradient(to bottom, #1e6eb8, #045a9c);
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  position: relative;
+}
+
+
+
+.main-box {
+  max-width: 900px;
+  margin: 30px auto;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background-color: #ffffff;
+  padding: 25px;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+}
+
+.doc-count {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.section-header {
+  width: 50%;
+
+  text-align: center;
+  margin:auto;
+  padding: 10px ;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  background-color: #ccc;
+}
+
+
+.search-input {
+  width: 100%;
+  padding: 12px;
+  max-width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  text-align: right;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 25px;
+}
+
+table th, table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  background-color: #fcfcfc;
+  font-size: 14px;
+}
+
+table th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.buttons button {
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  padding: 10px 30px;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.buttons button:hover {
+  background-color: #d6e6ff;
+}
+
+.radio-cell input[type="radio"] {
+  transform: scale(1.2);
+}
+

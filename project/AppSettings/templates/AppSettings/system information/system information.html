@@ -1,0 +1,71 @@
+{% extends 'baseSetting.html' %}
+
+{% block information %}
+{% load i18n %}
+{% load static %}
+
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- <link rel="stylesheet" href="system information style.css" /> -->
+  <link rel="stylesheet" href="{% static 'AppSettings/css/system information style.css'%}">
+  <link rel="stylesheet" href="{% static 'AppSettings/css/button.css'%}">
+
+</head>
+<body>
+  <div class="container">
+    <main class="content">
+      <section class="form-section">
+        <h3>معلومات النظام</h3>
+        <form id="system-form">
+          
+          <!-- اسم النظام -->
+          <label>اسم النظام</label>
+          <!-- <input type="text" placeholder="اسم النظام" /> -->
+           <input type="text" id="system_name" name="system_name" placeholder="اسم النظام" />
+
+          <!-- رفع شعار النظام -->
+          <label>رفع شعار النظام</label>
+          <!-- <input type="file" id="file-input" /> -->
+           <input type="file" id="file-input" name="logo" />
+          
+
+          <!-- اختيار اللغة -->
+          <label>اختار اللغة</label>
+          <div class="select-wrapper">
+            <select name="language" id="language">
+              <option value="ar">العربية</option>
+              <option value="en">-</option>
+              <option value="fr">-</option>
+            </select>
+          </div>
+
+          <!-- المنطقة الزمنية -->
+          <label>المنطقة الزمنية</label>
+          <div class="select-wrapper">
+            <select name="timezone" id="timezone">
+              <option value="Asia/Riyadh">السعودية (Asia/Riyadh)</option>
+              <option value="Africa/Cairo">مصر (Africa/Cairo)</option>
+              <option value="Asia/Dubai">الإمارات (Asia/Dubai)</option>
+              <option value="Asia/Baghdad">العراق (Asia/Baghdad)</option>
+              <option value="Asia/Amman">الأردن (Asia/Amman)</option>
+              <option value="Asia/Aden">اليمن (Asia/Aden)</option> <!-- ✅ تمت إضافة اليمن -->
+            </select>
+          </div>
+
+          <!-- الأزرار -->
+          <div class="buttons">
+            <button type="submit" class="button">حفظ</button>
+            <button type="reset" class="button cancel">إلغاء</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <!-- ملف الجافا سكربت -->
+  <!-- <script src="system information.js"></script> -->
+  <script src="{% static 'AppSettings/js/system information.js' %}"></script>
+</body>
+{% endblock information %}

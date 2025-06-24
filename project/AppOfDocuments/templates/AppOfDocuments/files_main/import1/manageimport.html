@@ -1,0 +1,297 @@
+
+
+{% extends 'base.html'%}
+{% block contentmannigemport%}
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    /* ... (الأنماط الحالية تبقى كما هي) ... */
+    body {
+      margin: 0;	
+      font-family: "Tahoma", sans-serif;
+      background-color: #f9f9f9;
+    }
+    /*
+
+    .top-header {
+      background: linear-gradient(to bottom, #1e6eb8, #045a9c);
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      position: relative;
+    }
+
+    .logo {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      width: 65px;
+    }*/
+
+    .main-box {
+      max-width: 900px;
+      margin: 30px auto;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      background-color: #ffffff;
+      padding: 25px;
+      box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    }
+
+    .doc-count {
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    .section-header {
+      width: 50%;
+
+      text-align: center;
+      margin:auto;
+      padding: 10px ;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      background-color: #ccc;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px;
+      max-width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      text-align: right;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 25px;
+    }
+
+    table th, table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+      background-color: #fcfcfc;
+      font-size: 14px;
+    }
+
+    table th {
+      background-color: #f5f5f5;
+      font-weight: bold;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .buttons button {
+      background-color: #f1f1f1;
+      border: 1px solid #ccc;
+      padding: 10px 30px;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .buttons button:hover {
+      background-color: #d6e6ff;
+    }
+
+    .radio-cell input[type="radio"] {
+      transform: scale(1.2);
+    }
+    /* إضافة أنماط جديدة */
+    .action-buttons {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+    }
+    
+    .action-btn {
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    
+    .edit-btn {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+    }
+    
+    .delete-btn {
+      background-color: #f44336;
+      color: white;
+      border: none;
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    
+    .pagination a {
+      padding: 8px 16px;
+      margin: 0 4px;
+      border: 1px solid #ddd;
+      text-decoration: none;
+      color: #333;
+    }
+    
+    .pagination a.active {
+      background-color: #1e6eb8;
+      color: white;
+      border: 1px solid #1e6eb8;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-box">
+    <div class="section-header">
+      عرض الوثائق الواردة
+    </div>
+    
+    <div class="doc-count">
+      عدد الوثائق الواردة: <span id="docCount">{{ imports|length }}</span>
+    </div>
+
+    <input type="text" class="search-input" placeholder="بحث من الموضوع، الجهة، التاريخ" id="searchInput" onkeyup="searchTable()">
+
+    <table id="importsTable">
+      <thead>
+        <tr>
+          <th>الرقم</th>
+          <th>اسم المستخدم</th>
+          <th>العنوان</th>
+          <th>الجهة</th>
+          <th>التاريخ</th>
+          <th>الملاحظة</th>
+          <th>الوثيقة</th>
+          <th>الإجراءات</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for import in imports %}
+        <tr>
+          <td>{{ import.id }}</td>
+          <td>{{ import.employee.username }}</td>
+          <td>{{ import.document_title }}</td>
+          <td>{{ import.sender }}</td>
+          <td>{{ import.import_date }}</td>
+          <td>{{ import.notes|default:"لا يوجد" }}</td>
+          <td>
+            {% if import.import_image %}
+              <a href="{{ import.import_image.url }}" target="_blank">عرض</a>
+            {% else %}
+              لا يوجد
+            {% endif %}
+          </td>
+          <td class="action-buttons">
+            <button class="action-btn edit-btn" onclick="editDocument('{{ import.id }}')">تعديل</button>
+            <button class="action-btn delete-btn" onclick="confirmDelete('{{ import.id }}')">حذف</button>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8">لا توجد بيانات</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="pagination">
+      {% if imports.has_previous %}
+        <a href="?page=1">&laquo; الأولى</a>
+        <a href="?page={{ imports.previous_page_number }}">السابق</a>
+      {% endif %}
+      
+      <span class="current">
+        صفحة {{ imports.number }} من {{ imports.paginator.num_pages }}
+      </span>
+      
+      {% if imports.has_next %}
+        <a href="?page={{ imports.next_page_number }}">التالي</a>
+        <a href="?page={{ imports.paginator.num_pages }}">الأخيرة &raquo;</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <script>
+    // دالة البحث في الجدول
+    function searchTable() {
+      const input = document.getElementById("searchInput");
+      const filter = input.value.toUpperCase();
+      const table = document.getElementById("importsTable");
+      const tr = table.getElementsByTagName("tr");
+
+      for (let i = 1; i < tr.length; i++) {
+        let found = false;
+        const td = tr[i].getElementsByTagName("td");
+        
+        for (let j = 0; j < td.length - 1; j++) { // نستثني عمود الإجراءات
+          if (td[j]) {
+            const txtValue = td[j].textContent || td[j].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              found = true;
+              break;
+            }
+          }
+        }
+        
+        tr[i].style.display = found ? "" : "none";
+      }
+    }
+
+    // دالة التعديل
+    function editDocument(id) {
+      window.location.href = `/documents/edite_import/${id}/`;
+    }
+
+    // دالة الحذف
+    function confirmDelete(id) {
+      if (confirm("هل أنت متأكد من حذف هذه الوثيقة؟")) {
+        fetch(`/documents/delete_import/${id}/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCSRFToken(),
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => {
+          if (response.ok) {
+            alert("تم الحذف بنجاح");
+            location.reload();
+          } else {
+            alert("حدث خطأ أثناء الحذف");
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert("حدث خطأ في الاتصال بالخادم");
+        });
+      }
+    }
+
+    // دالة الحصول على CSRF Token
+    function getCSRFToken() {
+      const name = 'csrftoken';
+      const cookieValue = document.cookie.split('; ')
+        .find(row => row.startsWith(name))
+        ?.split('=')[1];
+      return cookieValue || '';
+    }
+  </script>
+</body>
+{% endblock contentmannigemport%}

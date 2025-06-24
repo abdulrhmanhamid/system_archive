@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+
+{% block manage_binder %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      margin: 0;	
+      font-family: "Tahoma", sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    
+    
+
+    .main-box {
+      max-width: 900px;
+      margin: 30px auto;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      background-color: #ffffff;
+      padding: 25px;
+      box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    }
+
+    .doc-count {
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    
+
+    .search-input {
+      width: 100%;
+      padding: 12px;
+      max-width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      text-align: right;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 25px;
+    }
+
+    table th, table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+      background-color: #fcfcfc;
+      font-size: 14px;
+    }
+
+    table th {
+      background-color: #f5f5f5;
+      font-weight: bold;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .buttons button {
+      background-color: #f1f1f1;
+      border: 1px solid #ccc;
+      padding: 10px 30px;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .buttons button:hover {
+      background-color: #d6e6ff;
+    }
+
+    .radio-cell input[type="radio"] {
+      transform: scale(1.2);
+    }
+  </style>
+</head>
+<body>
+
+
+
+  <div class="main-box">
+    <div class="section-header">
+      الحافظة
+    </div>
+   
+
+
+    <input type="text" class="search-input" placeholder="    بحث" id="searchInput">
+
+    <table>
+      <thead>
+        <tr>
+          <th>الرقم</th>
+          <th>اسم المستخدم</th>
+          <th>التاريخ</th>
+          <th>الملاحظة</th>
+          <th>الصورة</th>
+          <th>اختيار</th>
+        </tr>
+      </thead>
+      <tbody id="documentsTable">
+        <!-- بيانات الوثائق ستظهر هنا -->
+      </tbody>
+    </table>
+
+    <div class="buttons">
+      <button onclick="deleteDocument()">🗑️ حذف</button>
+    </div>
+  </div>
+
+  <script>
+    const sampleData = [
+      {
+        id: 101,
+        user: "أحمد يوسف",
+        title: "مراسلة رسمية",
+        org: "وزارة المالية",
+        date: "2025-05-20",
+        note: "يُرجى المتابعة",
+        doc: "وثيقة.pdf"
+      },
+      {
+        id: 102,
+        user: "أحمد ",
+        title: "مراسلة",
+        org: "وزارة العدل",
+        date: "2025-06-20",
+        note: "يُرجى المتابعة",
+        doc: "وثيقة.pdf"
+      }
+    ];
+
+    function loadDocuments() {
+      const tableBody = document.getElementById("documentsTable");
+      tableBody.innerHTML = "";
+
+      sampleData.forEach((doc, i) => {
+        const row = `
+          <tr>
+            <td>${doc.id}</td>
+            <td>${doc.user}</td>
+            <td>${doc.title}</td>
+            <td>${doc.org}</td>
+            <td>${doc.date}</td>
+            <td>${doc.note}</td>
+            <td><a href="#">${doc.doc}</a></td>
+            <td class="radio-cell"><input type="radio" name="selectDoc"></td>
+          </tr>
+        `;
+        tableBody.innerHTML += row;
+      });
+    }
+
+    function printPage() {
+        const selectedRadio = document.querySelector('input[name="selectDoc"]:checked');
+    if (!selectedRadio) {
+      alert("يرجى تحديد وثيقة أولاً قبل الطباعة.");
+      return;
+    }
+
+    const row = selectedRadio.closest("tr");
+    const cells = row.querySelectorAll("td:not(.radio-cell)");
+
+    let printContent = `
+      <html dir="rtl" lang="ar">
+      <head>
+        <title>طباعة الوثيقة</title>
+        <style>
+          body {
+            font-family: Tahoma, sans-serif;
+            text-align: right;
+            padding: 30px;
+          }
+          table {
+            border-collapse: collapse;
+            width: 100%;
+          }
+          td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 16px;
+          }
+        </style>
+      </head>
+      <body>
+        <h2>بيانات الوثيقة المحددة</h2>
+        <table>
+    `;
+
+    cells.forEach((cell, index) => {
+      const headers = ["الرقم", "اسم المستخدم", "العنوان", "الجهة", "التاريخ", "الملاحظة", "الوثيقة"];
+      printContent += `
+        <tr>
+          <td><strong>${headers[index]}</strong></td>
+          <td>${cell.innerHTML}</td>
+        </tr>
+      `;
+    });
+
+    printContent += `
+        </table>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open("", "", "width=800,height=600");
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+
+    }
+
+    function editDocument() {
+      alert("سيتم تعديل الوثيقة المحددة لاحقًا.");
+    }
+
+    function deleteDocument() {
+      alert("سيتم حذف الوثيقة المحددة لاحقًا.");
+    }
+    document.getElementById("searchInput").addEventListener("input", function () {
+  const keyword = this.value.trim().toLowerCase();
+  const rows = document.querySelectorAll("#documentsTable tr");
+
+  rows.forEach(row => {
+    const cells = row.querySelectorAll("td");
+    const title = cells[2]?.textContent.toLowerCase() || "";
+    const org = cells[3]?.textContent.toLowerCase() || "";
+    const date = cells[4]?.textContent.toLowerCase() || "";
+
+    if (title.includes(keyword) || org.includes(keyword) || date.includes(keyword)) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+    }
+  });
+});
+
+  </script>
+
+</body>
+{% endblock manage_binder %}

@@ -1,0 +1,122 @@
+{% extends 'base.html'%} 
+{% block add_stamp%} 
+{% load static %}
+
+<head>
+  <meta charset="UTF-8">
+  <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="{% static 'AppOfDocuments/css/export.css' %}" type="text/css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+  <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+  <main class="content">
+      <div class="form-container">
+        <h2 class="form-title">إضافة ختم</h2>
+
+        <div class="form-right">
+          <div class="form-group">
+       <input id="titleInput" class="input-field" placeholder="نوع الختم" oninput="filterFiles(this.value)">
+<div id="dropdownList" class="dropdown-list"></div>
+
+          </div>
+          
+          
+          <div class="upload-buttons">
+            <button class="upload-btn" onclick="window.location.href='/documents/manage_stamp/'">
+              <i class="fas fa-scanner"></i>
+              عرض
+            </button>
+            <button class="upload-btn" onclick="uploadStampImage()">
+              <i class="fas fa-file-upload"></i>
+              رفع وثيقة
+            </button>
+          </div>
+
+        
+
+          <button class="save-btn" onclick="saveStamp()">حفظ</button>
+          
+        </div>
+
+      <div class="form-left">
+          <div class="image-upload" id="imageUpload">
+            <canvas id="canvas" style="max-width:100%; max-height:100%;"></canvas>
+          </div>
+    </main>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let currentStampImage = new Image();
+
+    function uploadStampImage() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/png,';
+
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            currentStampImage = new Image();
+            currentStampImage.onload = function () {
+              canvas.width = currentStampImage.width;
+              canvas.height = currentStampImage.height;
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              ctx.drawImage(currentStampImage, 0, 0);
+            };
+            currentStampImage.src = event.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+      input.click();
+    }
+
+    function saveStamp() {
+      if (!currentStampImage.src) {
+      alert("يرجى رفع صورة الختم أولاً.");
+      return;
+    }
+    const formData = {
+   stamp_type: document.getElementById('titleInput').value,
+    if (stamp_type) {
+      alert("يرجى إدخال نوع الختم.");
+      return;
+    },
+
+       stamp_image:  canvas.toDataURL('image/png'),
+    csrfmiddlewaretoken: document.querySelector('[name=csrfmiddlewaretoken]').value
+  };
+
+    fetch('/documents/save_stamp/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': formData.csrfmiddlewaretoken
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(response => {
+      if (!response.ok) throw new Error('خطأ في الحفظ');
+      return response.json();
+    })
+    .then(data => {
+      alert('تم حفظ الختم بنجاح!');
+      // يمكنك إعادة التوجيه أو تحديث الصفحة هنا
+    })
+    .catch(error => {
+      alert('حدث خطأ أثناء الحفظ: ' + error.message);
+    });
+    }
+    
+  </script>
+</body>
+
+{% endblock add_stamp%}

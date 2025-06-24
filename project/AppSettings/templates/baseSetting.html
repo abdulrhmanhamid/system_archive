@@ -1,0 +1,73 @@
+<!-- templates/base.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ system_settings.system_name|default:"نظام الأرشيف" }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'AppSettings/css/style_preservative.css' %}">
+    <link rel="stylesheet" href="{% static 'AppSettings/css/button.css'%}">
+
+</head>
+<body>
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+            <!-- الشريط الجانبي -->
+            <div  class="col-md-2 sidebar bg-dark" id="sidebar">
+                <!-- ... نفس قائمة التنقل التي وضعتها ... -->
+                {% include 'sidebar.html' %}
+
+            </div>
+
+            <!-- المحتوى الرئيسي -->
+            <div class="col-md-10">
+                <header class="app-header d-flex align-items-center justify-content-between p-3 bg-primary">
+                    <!-- ... نفس الهيدر الذي أرسلته ... -->
+                    {% include 'header.html' %}
+                </header>
+
+                {% block information %}
+                {% endblock information %}
+                {% block user_management %}{% endblock %}
+                {% block stamp_settings %}{% endblock %}
+                {% block backup_ui %}{% endblock %}
+                {% block secuity %}{% endblock %}
+                {% block connection_setting %}{% endblock %}
+                {% block add_user %}{% endblock %}
+                {% block change_password %}{% endblock %}
+                <!-- محتوى الصفحة المتغير -->
+                {% block content %}{% endblock %}
+
+                {% block add_stamp%}
+                {% endblock add_stamp%}
+                
+
+                {% block edit_stamp %}
+                {% endblock edit_stamp %}
+
+                {% block manage_stamp%}
+                {% endblock manage_stamp%}
+
+               
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('show');
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'AppSettings/js/script_preservative.js' %}"></script>
+    <script src="{% static 'AppMain/js/transfers.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+{% extends 'baseSetting.html' %}
+{% load static %}
+
+{% block connection_setting %}
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>إعدادات الاتصالات</title>
+    <link rel="stylesheet" href="{% static 'AppSettings/css/button.css'%}">
+
+    <link rel="stylesheet" href="{% static 'AppSettings/css/connection style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>إعدادات الاتصالات</h2>
+        <div class="box">
+            <div class="radio-group">
+                <label><input type="radio" name="connection" value="local" checked> اتصال محلي</label>
+                <label><input type="radio" name="connection" value="network"> اتصال شبكي</label>
+            </div>
+            <form id="connection-form">
+                <label>اسم السيرفر</label>
+                <input type="text" id="server" name="server">
+
+                <label>اسم قاعدة البيانات</label>
+                <input type="text" id="database" name="database">
+
+                <label>رقم المنفذ</label>
+                <input type="text" id="port" name="port">
+
+                <label>اسم المستخدم</label>
+                <input type="text" id="username" name="username">
+
+                <label>كلمة السر</label>
+                <input type="password" id="password" name="password">
+
+                <div class="buttons">
+                    <button type="submit" class="button">حفظ</button>
+                    <button type="button" class="button cancel">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="{% static 'AppSettings/js/connection.js' %}"></script>
+</body>
+</html>
+{% endblock connection_setting %}

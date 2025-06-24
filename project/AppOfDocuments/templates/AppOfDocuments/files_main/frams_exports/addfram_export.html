@@ -1,0 +1,69 @@
+{% extends 'base.html'%}
+{% block add_fram_exports %}
+{% load static %}
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <link rel="stylesheet" href="{% static 'AppOfDocuments/css/fram_export.css' %}" type="text/css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+  <main class="content">
+    <div class="form-container">
+      <h2 class="form-title">إضافة إطار الصادر</h2>
+
+      <form id="frameForm" method="POST" style="margin: 0 auto; width: 50%;" action="{% url 'save_frame_template' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-right">
+          <div class="form-group">
+            <input id="titleInput" name="document_title" class="input-field" placeholder="العنوان" required>
+          </div>
+          <div class="form-group">
+            <input type="date" class="input-field" name="date_input" placeholder="تاريخ التسليم">
+          </div>
+          <div class="form-group">
+            <textarea class="input-field" name="notes" rows="4" placeholder="ملاحظات"></textarea>
+          </div>
+
+          <div class="upload-buttons">
+            <input type="file" id="word_file_input" name="word_file" accept=".docx" style="display:none;" required>
+            <button class="upload-btn" type="button" onclick="document.getElementById('word_file_input').click();">
+              <i class="fas fa-file-upload"></i> رفع ملف وورد
+            </button>
+          </div>
+
+          <div class="stamp-view-buttons">
+            <button class="upload-btn stamp-btn" onclick="window.location.href='/documents/manage_frame_templates/'">
+              عرض
+            </button>
+          </div>
+
+          <button class="save-btn" type="submit">حفظ</button>
+        </div>
+
+        <div class="form-left">
+          <div id="fileNameDisplay" style="font-weight: bold; font-size: 16px; color: #333;">
+            لم يتم تحميل أي ملف
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById("word_file_input").addEventListener("change", function () {
+      const file = this.files[0];
+      if (file) {
+        document.getElementById("fileNameDisplay").textContent = `تم تحميل الملف: ${file.name}`;
+      } else {
+        document.getElementById("fileNameDisplay").textContent = "لم يتم تحميل أي ملف";
+      }
+    });
+  </script>
+</body>
+
+{% endblock add_fram_exports %}

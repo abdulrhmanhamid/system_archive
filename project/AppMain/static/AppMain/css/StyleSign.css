@@ -1,0 +1,156 @@
+/* General Styles */
+body {
+    font-family: 'Tajawal', sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.header {
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #555;
+    margin: 0;
+    padding: 0 0 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Login Card */
+.login-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.logo-container {
+    margin-bottom: 20px;
+}
+
+.logo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+.login-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+/* Form Controls */
+.form-control {
+    padding: 12px 15px;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    background-color: #f8f9fa;
+    color: #333;
+    font-size: 1rem;
+    text-align: right;
+    margin-bottom: 15px;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+    border-color: #3498db;
+    background-color: #fff;
+}
+
+.form-control::placeholder {
+    color: #999;
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #2980b9;
+    border-color: #2980b9;
+    box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+}
+
+.btn-primary:active {
+    background-color: #2471a3;
+    border-color: #2471a3;
+}
+
+/* Alert Styles */
+.alert {
+    margin-top: 20px;
+    text-align: right;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 576px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .login-card {
+        padding: 20px;
+    }
+    
+    .logo {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .login-title {
+        font-size: 1.3rem;
+        margin-bottom: 20px;
+    }
+    
+    .form-control {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+    
+    .btn-primary {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+}
+
+/* Animation for Login Button */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.btn-pulse {
+    animation: pulse 1.5s infinite;
+}

@@ -1,0 +1,49 @@
+{% extends 'baseSetting.html' %}
+
+{% block stamp_settings %}
+{% load static %}
+
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>إعدادات الختم الإلكتروني</title>
+    <link rel="stylesheet" href="stamp settings style.css">
+     <link rel="stylesheet" href="{% static 'AppSettings/css/stamp settings style.css'%}">
+     <link rel="stylesheet" href="{% static 'AppSettings/css/button.css'%}">
+
+</head>
+<body>
+    <div class="container">
+        
+        
+        <main class="content">
+            <h2>إعدادات الختم الالكتروني</h2>
+            <form id="stampForm">
+                <label for="stampImage">رفع صورة الختم</label>
+                <input type="file" id="stampImage" accept="image/*">
+
+                <label for="position">تحديد موضع الختم</label>
+                <select id="position">
+                    <option>أسفل يمين</option>
+                    <option>أسفل يسار</option>
+                    <option>أعلى يمين</option>
+                    <option>أعلى يسار</option>
+                </select>
+
+                <label>
+                    <input type="checkbox" id="autoStamp">
+                    الختم التلقائي لكل وثيقة جديد
+                </label>
+
+                <div class="form-buttons">
+                    <button type="submit" class="button">حـفـظ</button>
+                    <button type="reset" class="button cancel">إلغاء</button>
+                </div>
+            </form>
+        </main>
+    </div>
+    <!-- <script src="stamp settings.js"></script> -->
+    <script src="{% static 'AppSettings/js/stamp settings.js' %}"></script>
+
+</body>
+{% endblock stamp_settings %}

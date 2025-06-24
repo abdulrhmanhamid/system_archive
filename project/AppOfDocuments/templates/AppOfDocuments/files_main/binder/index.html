@@ -1,0 +1,130 @@
+<!--كود غير مستخدم -->
+
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام الأرشيف</title>
+    <!-- Bootstrap RTL CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="D:/fourd-level2/project_Frontend/files_main/style_header.css">
+
+</head>
+<body>
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+            <!-- Sidebar Container -->
+            <div class="col-md-2 sidebar" id="sidebarContainer">
+                <!-- سيتم تحميل الشريط الجانبي هنا -->
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-10">
+                <!-- Header Container -->
+                <header id="headerContainer">
+                    <!-- سيتم تحميل الرأس هنا -->
+                </header>
+                
+                <!-- Content Area -->
+                <div class="content-area p-3">
+                    <div class="card main-card">
+                        <div class="card-header text-center">
+                            <h5 class="mb-0">البحث</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Search Form -->
+                            <div class="search-form mb-4">
+                                <div class="row">
+                                    <div class="col-md-10 mx-auto">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" placeholder="البحث...">
+                                            <button class="btn btn-outline-secondary" type="button">بحث</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Content Area (Changes based on view) -->
+                            <div id="contentView" class="content-view">
+                                <!-- Initial view (first screenshot) -->
+                                <div id="initialView" class="view-container">
+                                    <div class="document-preview-area">
+                                        <p class="text-center text-muted">الوثيقة</p>
+                                    </div>
+                                    <div class="d-flex justify-content-center mt-3">
+                                        <button class="btn btn-secondary mx-1">طباعة</button>
+                                        <button class="btn btn-secondary mx-1">تحميل</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Detailed view (second screenshot) - hidden by default -->
+                                <div id="detailedView" class="view-container" style="display: none;">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>رقم</th>
+                                                    <th>المستخدم</th>
+                                                    <th>التاريخ</th>
+                                                    <th>الملف</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- سيتم إضافة الصفوف ديناميكيًا -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Footer Actions -->
+                            <div class="text-center mt-3">
+                                <button id="toggleViewBtn" class="btn btn-outline-primary">عرض التفاصيل</button>
+                            </div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">جميع الحقوق محفوظة © 2023</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Components Loader Script -->
+    <script>
+        $(document).ready(function() {
+            // تحميل الشريط الجانبي
+            $("#sidebarContainer").load("components/sidebar.html", function(response, status, xhr) {
+                if (status == "error") {
+                    console.error("خطأ في تحميل الشريط الجانبي:", xhr.status, xhr.statusText);
+                    $("#sidebarContainer").html('<div class="alert alert-danger">فشل تحميل الشريط الجانبي</div>');
+                }
+            });
+            
+            // تحميل الرأس
+            $("#headerContainer").load("components/header.html", function(response, status, xhr) {
+                if (status == "error") {
+                    console.error("خطأ في تحميل الرأس:", xhr.status, xhr.statusText);
+                    $("#headerContainer").html('<div class="alert alert-danger">فشل تحميل الرأس</div>');
+                }
+            });
+        });
+    </script>
+    
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+</body>
+</html>

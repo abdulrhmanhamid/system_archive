@@ -1,0 +1,71 @@
+
+<div class="col-md-2 sidebar " id="sidebar">
+    <div class="sidebar-header">
+        <h2>لوحة التحكم</h2>
+        
+    </div>
+    <!-- <a  href="{% url 'AppSettings:change_password' %}">تغيير كلمة المرور</a> -->
+
+    <div class="sidebar-menu">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'main_index' %}">
+                    <i class="fas fa-home"></i>
+                    <span>الوجهة الرئيسية </span>
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link" href="{% url 'system_archive:system information' %}">
+                    <i class="fas fa-desktop"></i>
+                    <span>معلومات النظام</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'system_archive:user_management' %}">
+                    <i class="fas fa-users"></i>
+                    <span>ادارة المستخدمين</span>
+                </a>
+            </li>
+            <a class="nav-link" href="{% url 'system_archive:add_stamp' %}">
+                <i class="fas fa-signature"></i>
+                <span>إعدادات الختم الإلكتروني</span>
+            </a>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'system_archive:index_backup_ui' %}">
+                    <i class="fas fa-save"></i>
+                    <span> النسخ الاحتياطي ولاسترجاع</span>
+                </a>
+            </li>
+            <!-- <li class="nav-item">
+                <a class="nav-link" href="{% url 'system_archive:connection settings' %}">
+                    <i class="fas fa-network-wired"></i>
+                    <span>إعدادات الاتصال</span>
+                </a>
+            </li> -->
+            <!-- <li class="nav-item">
+                <a class="nav-link" href="{% url 'system_archive:security' %}">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>الأمان</span>
+                </a>
+            </li> -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'AppSettings:change_password' %}">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>تغيير كلمة المرور</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="handleNavigation('تراجع')">
+                    <i class="fas fa-undo"></i>
+                    <span>تراجع</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="handleNavigation('تسجيل خروج')">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>تسجيل خروج</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

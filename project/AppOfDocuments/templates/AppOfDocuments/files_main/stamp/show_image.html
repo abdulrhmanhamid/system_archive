@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="text-align: center; margin-top: 50px;">
+  {% if image_base64 %}
+    <img src="data:image/png;base64,{{ image_base64 }}" style="max-width: 80%; height: auto; border: 1px solid #ccc;" />
+  {% else %}
+    <p>لا توجد صورة متاحة</p>
+  {% endif %}
+
+  <br><br>
+  <a href="/documents/manage_stamp/" style="padding: 10px 20px; background: #007BFF; color: white; text-decoration: none; border-radius: 5px;">
+    ← الرجوع إلى صفحة الإدارة
+  </a>
+</div>
+
+{% endblock %}

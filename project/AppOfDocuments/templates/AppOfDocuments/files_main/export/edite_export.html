@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% block edite_export %}
+{% load static %}
+{% load custom_filters %}
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تعديل الصادر</title>
+  <link rel="stylesheet" href="{% static 'AppOfDocuments/css/export.css' %}" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
+  <main class="content">
+    <div class="form-container">
+      <h2 class="form-title">تعديل الصادر</h2>
+
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-right">
+
+          <div class="form-group">
+            <input
+              type="text"
+              name="document_title"
+              class="input-field"
+              placeholder="العنوان"
+              value="{{ export.document_title }}"
+            />
+          </div>
+
+          <div class="form-group">
+            <input
+              type="text"
+              name="recipient"
+              class="input-field"
+              placeholder="الجهة المرسلة"
+              value="{{ export.recipient }}"
+            />
+          </div>
+
+          <div class="form-group">
+            <input
+              type="date"
+              name="export_date"
+              class="input-field"
+              value="{{ export.export_date|date:'Y-m-d' }}"
+            />
+          </div>
+
+          <div class="form-group">
+            <textarea
+              name="notes"
+              class="input-field"
+              rows="4"
+              placeholder="ملاحظات"
+            >{{ export.notes }}</textarea>
+          </div>
+
+          <!-- حقل رفع الصورة -->
+          <div class="form-group">
+            <label for="export_image">اختر صورة جديدة (اختياري):</label>
+            <input type="file" name="export_image" id="export_image" accept="image/*" />
+          </div>
+
+          <div class="stamp-view-buttons">
+            <button type="button" class="upload-btn stamp-btn" onclick="applyStamp()">
+              <i class="fas fa-stamp"></i>
+              ختم الصادر
+            </button>
+            <button
+              type="button"
+              class="upload-btn stamp-btn"
+              onclick="window.location.href='/documents/manage_exports/'"
+            >
+              عرض
+            </button>
+          </div>
+
+          <button type="submit" class="save-btn" onclick="copyCanvasToInput()">
+            حفظ التعديلات
+          </button>
+
+          <!-- حقل مخفي لحفظ صورة الكانفس -->
+          <input type="hidden" name="canvas_image_data" id="canvas_image_data" />
+        </div>
+
+        <div class="form-left">
+          <div class="image-upload" id="imageUpload">
+            <canvas id="canvas" style="max-width: 100%; max-height: 100%; border: 1px solid #ccc"></canvas>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+
+{% if stamp_warning %}
+  <div style="color: red; font-weight: bold; margin: 10px;">
+    {{ stamp_warning }}
+  </div>
+{% endif %}
+
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let currentImage = new Image();
+
+    // تحميل الصورة الحالية من البيانات (إذا موجودة)
+    {% if export.export_image %}
+      currentImage.src = "data:image/png;base64,{{ export.export_image|b64encode }}";
+      currentImage.onload = () => {
+        canvas.width = currentImage.width;
+        canvas.height = currentImage.height;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(currentImage, 0, 0);
+      };
+    {% endif %}
+
+    // وظيفة وضع الختم على الصورة في الكانفس
+function applyStamp() {
+  if (!currentImage.src) {
+    alert("الرجاء رفع صورة أولاً.");
+    return;
+  }
+
+  const stampSrc = "{{ stamp_base64|default:'' }}";
+  if (!stampSrc) {
+    alert("لا يوجد ختم متاح. يرجى رفع ختم من نوع صادر.");
+    return;
+  }
+
+  const stampImg = new Image();
+  stampImg.src = stampSrc;
+
+  stampImg.onload = function () {
+    ctx.clearRect(0, 0, canvas.width + 2, canvas.height + 2);
+    ctx.drawImage(currentImage, 0, 0);
+
+    const stampWidth = 130;
+    const stampHeight = 130;
+    const marginTop = 70;
+    const marginLeft = 100;
+
+    ctx.globalAlpha = 0.8;
+    ctx.drawImage(stampImg, marginLeft, marginTop, stampWidth, stampHeight);
+    ctx.globalAlpha = 1.0;
+
+    const dateText = new Date().toLocaleDateString('EG');
+    ctx.fillStyle = 'black';
+    ctx.font = '16px Arial';
+    ctx.fillText(dateText, marginLeft + 90, marginTop + stampHeight + 10);
+  };
+}
+
+
+
+    // عند اختيار صورة جديدة من input file تُعرض في الكانفس وتستبدل القديمة
+    const exportImageInput = document.getElementById('export_image');
+    exportImageInput.addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const img = new Image();
+        img.onload = function () {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0);
+          currentImage = img;
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // نسخ بيانات الصورة من الكانفس إلى الحقل المخفي عند الحفظ
+    function copyCanvasToInput() {
+      const imageData = canvas.toDataURL('image/png');
+      document.getElementById('canvas_image_data').value = imageData;
+    }
+  </script>
+</body>
+</html>
+{% endblock edite_export %}

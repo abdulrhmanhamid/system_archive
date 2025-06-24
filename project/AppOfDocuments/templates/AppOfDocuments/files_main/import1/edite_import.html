@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block edite_import %}
+{% load static %}
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام الأرشيف</title>
+  <link rel="stylesheet" href="{% static 'AppOfDocuments\css\edite_import.css' %}" type="text/css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <header class="header">
+  </header>
+    </aside>
+    <main class="content">
+      <div class="form-container">
+        <h2 class="form-title">تعديل الوارد</h2>
+        <div class="form-right">
+          <div class="form-group">
+            <input type="text" class="input-field" placeholder="العنوان">
+          </div>
+          <div class="form-group">
+            <input type="text" class="input-field" placeholder="الجهة المرسلة">
+          </div>
+          <div class="form-group">
+            <input type="date" class="input-field" placeholder="تاريخ التسليم">
+          </div>
+          <div class="form-group">
+            <textarea class="input-field" rows="4" placeholder="ملاحظات"></textarea>
+          </div>
+          <div class="upload-buttons">  
+            </button>
+          </div>
+        <div class="stamp-view-buttons">
+          <button class="upload-btn stamp-btn" onclick="applyStamp()">
+            <i class="fas fa-stamp"></i>
+            ختم الوارد
+          </button>
+           <button class="upload-btn stamp-btn" onclick="window.location.href='/documents/manageimport/'">
+             عرض
+          </button>
+        </div>
+          <button class="save-btn" onclick="saveImage()">حفظ</button>
+        </div>
+        <div class="form-left">
+          <div class="image-upload" id="imageUpload">
+            <canvas id="canvas" style="max-width:100%; max-height:100%;"></canvas>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script>
+    const menuToggle = document.querySelector('.menu-toggle');
+const sidebar = document.querySelector('.sidebar');
+if (menuToggle) {
+  menuToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('hidden');
+  });
+}
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let currentImage = new Image();
+
+   function applyStamp() {
+
+  // تحقق من وجود صورة
+  if (!currentImage || !currentImage.src || currentImage.src === '') {
+    alert('يرجى تحميل صورة أولاً قبل وضع الختم.');
+    return;
+  }
+
+  if (!currentImage.src || !canvas || !ctx) return;
+
+  // إعدادات الختم
+  const stampText = 'وارد كلية الحاسبات والمعلوماتيه';
+  const date = new Date().toLocaleDateString('ar-EG'); // التاريخ بالتنسيق العربي
+  const padding = 20;
+  const lineHeight = 40;
+
+  ctx.font = 'bold 28px Arial';
+  const textWidth = Math.max(ctx.measureText(stampText).width, ctx.measureText(date).width);
+
+  const boxWidth = textWidth + padding * 2;
+  const boxHeight = lineHeight * 2 + padding * 2;
+
+  const boxX = (canvas.width - boxWidth) / 2;
+  const boxY = (canvas.height - boxHeight) / 2;
+
+  // رسم الخلفية الشفافة
+  ctx.fillStyle = 'rgba(0, 128, 0, 0.25)';
+  ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
+
+  // رسم النص
+  ctx.fillStyle = 'white';
+  ctx.textAlign = 'center';
+
+  ctx.fillText(stampText, canvas.width / 2, boxY + padding + lineHeight - 10);
+  ctx.fillText(date, canvas.width / 2, boxY + padding + lineHeight * 2 - 10);
+}
+
+  function saveImage() {
+  if (!currentImage || !currentImage.src || currentImage.src === '') {
+    alert('يرجى تحميل صورة أولاً قبل الحفظ.');
+    return;
+  }
+  const link = document.createElement('a');
+  link.download = 'صورة_مختومة.png';
+  link.href = canvas.toDataURL('image/png'); // تحويل محتوى الـ canvas إلى صورة PNG
+  link.click();
+}
+  </script>
+</body>
+{% endblock edite_import %}

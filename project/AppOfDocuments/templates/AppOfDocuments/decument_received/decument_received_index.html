@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام الأرشيف</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="decument_received_style.css">
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-circle">
+                        <img src="/placeholder.svg?height=50&width=50" alt="شعار النظام" class="logo">
+                    </div>
+                    <h1 class="system-title">نظام الأرشيف</h1>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-layout">
+            <!-- Main Content -->
+            <main class="content-area">
+                <!-- Search Bar -->
+                <div class="search-section">
+                    <div class="search-container">
+                        <button class="search-btn">البحث</button>
+                        <input type="text" class="search-input" placeholder="تعديل الوثائق">
+                    </div>
+                </div>
+
+                <!-- Document Form -->
+                <div class="document-container">
+                    <div class="document-layout">
+                        <!-- Preview Section -->
+                        <div class="preview-section">
+                            <div class="preview-box">
+                                <span class="preview-text">الصورة</span>
+                            </div>
+                        </div>
+
+                        <!-- Form Section -->
+                        <div class="form-section">
+                            <div class="form-group">
+                                <div class="input-wrapper">
+                                    <input type="text" class="form-input" placeholder="العنوان">
+                                    <div class="input-icon orange">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-wrapper">
+                                    <input type="text" class="form-input" placeholder="الجهة المرسلة">
+                                    <div class="input-icon blue">
+                                        <i class="fas fa-building"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-wrapper">
+                                    <input type="text" class="form-input" placeholder="التاريخ المرسل">
+                                    <div class="input-icon red">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="text" class="form-input-plain" placeholder="رقم الوثيقة (حسب المصدر)">
+                            </div>
+
+                            <div class="form-group">
+                                <input type="text" class="form-input-plain" placeholder="حجم الوثيقة">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Save Button -->
+                    <div class="save-section">
+                        <button class="save-button">حفظ التعديل</button>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h3>لوحة التحكم</h3>
+                </div>
+                <nav class="sidebar-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-file-alt"></i>
+                                <span>الوثائق</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-paper-plane"></i>
+                                <span>الصادر</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-inbox"></i>
+                                <span>الوارد</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>مشاريع تخرج</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-archive"></i>
+                                <span>الأرشيف</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-cogs"></i>
+                                <span>الإجراءات الخاصة</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-chart-bar"></i>
+                                <span>التقارير</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-user-plus"></i>
+                                <span>تسجيل جديد</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <script src="decument_received_script.js"></script>
+</body>
+</html>

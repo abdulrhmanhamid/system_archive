@@ -1,0 +1,231 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام الأرشيف</title>
+    <!-- Bootstrap RTL CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'AppOfDocuments/css/style_preservative.css'%}">
+    
+</head>
+<body>
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h2>لوحة التحكم</h2>
+                </div>
+                <div class="sidebar-menu">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'main_index' %}">
+                                <i class="fas fa-home"></i>
+                                <span> الرئيسية </span>
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" onclick="handleNavigation('الوثائق')">
+                                <i class="fas fa-file-alt"></i>
+                                <span>الوثائق</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="handleNavigation('الصادر')">
+                                <i class="fas fa-paper-plane"></i>
+                                <span>الصادر</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="handleNavigation('الوارد')">
+                                <i class="fas fa-inbox"></i>
+                                <span>الوارد</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="handleNavigation('مشاريع تخرج')">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>مشاريع تخرج</span>
+                            </a>
+                        </li>
+                        <!-- <li class="nav-item">
+                            <a class="nav-link" onclick="handleNavigation('الحافظة')">
+                                <i class="fas fa-folder"></i>
+                                <span>الحافظة</span>
+                            </a>
+                        </li> -->
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="handleNavigation('الإطارات الجاهزة')">
+                                <i class="fas fa-calendar-check"></i>
+                                <span>الإطارات الجاهزة</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="handleNavigation('تراجع')">
+                                <i class="fas fa-undo"></i>
+                                <span>تراجع</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="handleNavigation('تسجيل خروج')">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>تسجيل خروج</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-10">
+                <!-- Header -->
+                <header class="app-header d-flex align-items-center justify-content-between p-3 bg-primary">
+                    <!-- ... نفس الهيدر الذي أرسلته ... -->
+                    {% include 'header.html' %}
+                </header>
+                {% block contentadd_imports%}
+                {% endblock contentadd_imports%}
+                
+                
+                <!-- Content Area -->
+                 <!--
+                <div class="content-area p-3">
+                    <div class="card main-card">
+                        <div class="card-header text-center">
+                            <h5 class="mb-0">الحافظة</h5>
+                        </div>
+                        <!--<div class="card-body">
+                             Content Area (Changes based on view) -->
+                            <!--<div id="contentView" class="content-view">
+                                <!-- Initial view (first screenshot) -->
+                               <!-- <div id="initialView" class="view-container">
+                                    <div class="document-preview-area">
+                                        <p class="text-center text-muted">الوثيقة</p>
+                                    </div>
+                                    <div class="d-flex justify-content-center mt-3">
+                                        <button class="btn btn-secondary mx-1">رفع الوثيقة</button>
+                                        <button class="btn btn-secondary mx-1">مسح اسكناير</button>
+                                        <button class="btn btn-secondary mx-1"> حفظ</button>
+                                    </div>
+                                </div>
+                                -->
+                                <!-- Detailed view (second screenshot) - hidden by default -->
+                               <!-- <div id="detailedView" class="view-container" style="display: none;">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>رقم</th>
+                                                    <th>المستخدم</th>
+                                                    <th>التاريخ</th>
+                                                    <th>الملف</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>أحمد</td>
+                                                    <td>2023/05/15</td>
+                                                    <td>
+                                                         <button id="display_file" class="btn btn-sm btn-primary">عرض</button>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-primary">حذف</button>
+                                                    </td>
+                                                </tr>
+                                                <!-- More rows would be added dynamically 
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            
+                            </div>
+                            
+                            <!-- Footer Actions -->
+                             <!--
+                            <div class="text-center mt-3">
+                                <button id="toggleViewBtn" class="btn btn-outline-primary">عرض التفاصيل</button>
+                            </div>
+                       
+                        </div>
+                        
+                        <!--
+                        <div class="card-footer text-center">
+                            <small class="text-muted">جميع الحقوق محفوظة © 2023</small>
+                        </div>
+                    </div>
+                </div>-->
+                {% block content %}
+                {% endblock content %}
+                
+                {% block contentmannigemport%}
+                {% endblock contentmannigemport%}
+
+                {% block body_base %}
+                {% endblock body_base %}
+
+
+
+                {% block manage_binder %}
+
+                {% endblock manage_binder %}
+
+                {% block addbinder %}
+                {% endblock addbinder %}
+
+
+                {% block addproject %}
+                {% endblock addproject %}
+
+
+
+                {% block manageproject %}
+                {% endblock manageproject %}
+
+                {% block centerEditProject %}
+                {% endblock centerEditProject %}
+
+
+                {% block edite_import %}
+                {% endblock edite_import %}
+
+                {% block add_exports%}
+                {% endblock add_exports%}
+
+                {% block manage_export%}
+                {% endblock manage_export%}
+
+                {% block edite_export %}
+                {% endblock edite_export %}
+
+                {% block add_fram_exports%}
+                {% endblock add_fram_exports%}
+
+                {% block manage_fram_export%}
+                {% endblock manage_fram_export%}
+
+                
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Logo Upload Modal -->
+    
+    <div id="main-content"></div>
+    <!-- Bootstrap JS Bundle -->
+     
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{% static 'AppOfDocuments/js/script_preservative.js'%}"></script>
+    <script src="{% static 'AppMain/js/transfers.js'%}"></script>
+
+</body>
+</html>

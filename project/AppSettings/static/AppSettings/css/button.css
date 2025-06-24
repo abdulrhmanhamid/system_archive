@@ -1,0 +1,33 @@
+button {
+    background-color: #d0e4f1; /* يمكنك ضبطه حسب اللون من التصميم */
+    color: #000; /* لون النص */
+    border: 1px solid #707070; /* اللون المستخرج من إعدادات border */
+    border-radius: 36px; /* من إعدادات زاوية الحواف */
+    padding: 10px 40px;
+    font-size: 18px;
+    font-family: 'Tahoma', sans-serif;
+    box-shadow:
+      inset 5px 3px 6px rgba(0, 0, 0, 0.2), /* inner shadow */
+      5px 3px 6px rgba(0, 0, 0, 0.2);       /* drop shadow */
+    backdrop-filter: blur(30px) brightness(115%);
+    opacity: 0.94; /* حسب القيمة 6% المستخدمة مع الخلفية */
+    transition: 0.3s;
+    cursor: pointer;
+  }
+  
+
+/* زر الإلغاء - لون الخط أحمر */
+.button.cancel {
+    color: #ff0000; /* أو أي كود لون أحمر تفضله */
+}
+
+/* يمكنك إضافة أصناف أخرى لأزرار مختلفة */
+/* .button.confirm {
+    color: black; /* لون الخط أسود (افتراضي) *
+}
+
+/* .button.submit {
+    color: black; /* لون الخط أسود (افتراضي) *
+} */
+
+

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+  .scanner-container {
+    max-width: 800px;
+    margin: 50px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
+    direction: rtl;
+  }
+  .scanner-container canvas {
+    max-width: 100%;
+    border: 1px solid #ccc;
+    margin-top: 20px;
+  }
+  .scanner-container button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .scan-btn { background-color: #3498db; color: white; }
+  .save-btn { background-color: #2ecc71; color: white; }
+  .cancel-btn { background-color: #e74c3c; color: white; }
+</style>
+
+<div class="scanner-container">
+  <h2>مسح مستند باستخدام الماسح الضوئي</h2>
+  <button class="scan-btn" onclick="startScan()">بدء المسح</button>
+  <canvas id="scanCanvas"></canvas>
+  <div id="saveCancelButtons" style="display: none;">
+    <button class="save-btn" onclick="returnToAddPage()">حفظ</button>
+    <button class="cancel-btn" onclick="clearCanvas()">إلغاء</button>
+  </div>
+</div>
+
+<script>
+  const canvas = document.getElementById('scanCanvas');
+  const ctx = canvas.getContext('2d');
+  let scannedImage = null;
+
+  function startScan() {
+    fetch('/scan_now/', {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCSRFToken()
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.image) {
+        const img = new Image();
+        img.src = 'data:image/png;base64,' + data.image;
+        img.onload = () => {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+          scannedImage = img;
+          document.getElementById('saveCancelButtons').style.display = 'block';
+        };
+      } else {
+        alert('خطأ أثناء المسح: ' + data.error);
+      }
+    })
+    .catch(err => {
+      alert('تعذر الاتصال بالماسح.');
+      console.error(err);
+    });
+  }
+
+  function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    document.getElementById('saveCancelButtons').style.display = 'none';
+    scannedImage = null;
+  }
+
+  function returnToAddPage() {
+    // حفظ الصورة مؤقتًا في localStorage ثم الرجوع لصفحة الإضافة
+    const imageData = canvas.toDataURL('image/png');
+    localStorage.setItem('scannedImage', imageData);
+    window.location.href = '/documents/add_imports/';
+  }
+
+  function getCSRFToken() {
+    const name = 'csrftoken';
+    return document.cookie.split('; ')
+      .find(row => row.startsWith(name + '='))
+      ?.split('=')[1];
+  }
+</script>
+
+{% endblock %}

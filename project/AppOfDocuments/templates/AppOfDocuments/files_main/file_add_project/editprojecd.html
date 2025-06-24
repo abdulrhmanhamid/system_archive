@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block centerEditProject %}
+{% load static %}
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="{% static 'AppOfDocuments/css/EditProject.css' %}" type="text/css">
+</head>
+<body>
+
+  <div class="main">
+    <div class="content">
+      <h2>تعديل مشروع التخرج</h2>
+      <form id="editProjectForm" class="user-form">
+        {% csrf_token %}
+        <input type="hidden" id="project_id" value="{{ project_id }}">
+        <input type="text" id="project_name" placeholder="عنوان المشروع">
+        <input type="number" id="students_count" placeholder="عدد الطلاب">
+        <textarea id="group_names" placeholder="اسماء الطلاب (افصل بينهم بفواصل)"></textarea>
+        <input type="text" id="supervisor_name" placeholder="اسم المشرف">
+        <input type="date" id="delivery_date" placeholder="تاريخ التسليم">
+        <div class="footer-buttons">
+          <button type="submit">تعديل</button>
+          <button type="button" class="cancel" onclick="window.location.href='/documents/manageproject/'">إلغاء</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="{% static 'AppOfDocuments/js/EditProject.js' %}"></script>
+</body>
+{% endblock centerEditProject %}

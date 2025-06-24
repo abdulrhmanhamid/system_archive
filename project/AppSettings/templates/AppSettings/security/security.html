@@ -1,0 +1,55 @@
+{% extends 'baseSetting.html' %}
+
+{% block secuity %}
+{% load static %}
+
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>الأمان - نظام الأرشيف</title>
+    <!-- <link rel="stylesheet" href="security style.css"> -->
+    <link rel="stylesheet" href="{% static 'AppSettings/css/button.css'%}">
+
+    <link rel="stylesheet" href="{% static 'AppSettings/css/security style.css'%}">
+</head>
+<body>
+    <div class="container">
+        <h2 class="section-title">الأمن</h2>
+        <div class="form-box">
+            <div class="form-group">
+                <!-- <button class="input-field">تغيير كلمة المرور</button> -->
+                <button class="button" onclick="window.location.href='/appsettings/change password/' ">تغير كلمة المور</button>
+            </div>
+            <div class="form-group">
+                <label for="session_duration">تحديد وقت انتهاء الجلسة تلقائياً بعد فترة خمول</label>
+                <select id="session_duration" class="input-field">
+                    <option value="5">5 دقائق</option>
+                    <option value="15">15 دقيقة</option>
+                    <option value="30">30 دقيقة</option>
+                    <option value="60">ساعة</option>
+                </select>
+                <label class="field-label">مدة الجلسة</label>
+            </div>
+            <div class="form-group">
+                <label for="failed_attempts">كم محاولة خاطئة مسموحة قبل قفل الحساب</label>
+                <select id="failed_attempts" class="input-field">
+                    <option value="3">3 محاولات</option>
+                    <option value="5">5 محاولات</option>
+                    <option value="7">7 محاولات</option>
+                </select>
+                <label class="field-label">محاولات تسجيل الدخول الفاشلة</label>
+            </div>
+            <div class="form-actions">
+                
+                <!-- <button class="save-btn">حفظ</button>
+                <button class="cancel-btn">إلغاء</button> -->
+                <button class="button" onclick="confirmSecuritySettings()">حفظ</button>
+                <button class="button cancel" onclick="resetSecurityForm()">إلغاء</button>
+               
+            </div>
+        </div>
+    </div>
+    <!-- <script src="security.js"></script> -->
+    <script src="{% static 'AppSettings/js/security.js' %}"></script>
+</body>
+{% endblock secuity %}

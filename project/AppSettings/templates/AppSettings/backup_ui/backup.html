@@ -1,0 +1,61 @@
+{% extends 'baseSetting.html' %}
+{% load static %}
+
+{% block backup_ui %}
+<head>
+    <meta charset="UTF-8" />
+    <title>نظام الأرشيف - النسخة الاحتياطية</title>
+    <link rel="stylesheet" href="{% static 'AppSettings/css/backup-style.css' %}">
+  <link rel="stylesheet" href="{% static 'AppSettings/css/button.css'%}">
+
+<div class="container">
+    <div class="main">
+        <div class="content">
+            <h3 class="title">النسخة الاحتياطية</h3>
+
+            <!-- زر إنشاء نسخة احتياطية -->
+            <form method="get" action="{% url 'AppSettings:download_backup' %}">
+                <label>إنشاء نسخة احتياطية</label>
+                <button type="submit" class="button">تحميل النسخة الاحتياطية</button>
+            </form>
+
+            <!-- رفع نسخة احتياطية -->
+            <form method="POST" enctype="multipart/form-data" action="{% url 'AppSettings:restore_backup' %}">
+                {% csrf_token %}
+                <label>رفع النسخة الاحتياطية لاسترجاع النظام</label>
+                <input type="file" name="backup_file" accept=".sql" required />
+                <button type="submit" class="button">استرجاع النسخة</button>
+            </form>
+
+            <!-- جدولة النسخة الاحتياطية -->
+            <form method="POST" action="{% url 'AppSettings:update_backup_settings' %}">
+                {% csrf_token %}
+                <label>جدولة نسخة احتياطية</label>
+                <select name="schedule">
+                    <option value="daily">كل يوم</option>
+                    <option value="weekly">كل أسبوع</option>
+                    <option value="monthly">كل شهر</option>
+                </select>
+                <button type="submit" class="button">حفظ الإعدادات</button>
+            </form>
+
+            <!-- حالة النسخة الاحتياطية -->
+            {% if backup_setting %}
+                <label>حالة النسخة الاحتياطية:</label>
+                <div class="status">
+                    {% if backup_setting.status == 'success' %}
+                        <span class="success">تمت بنجاح</span>
+                    {% elif backup_setting.status == 'pending' %}
+                        <span class="pending">قيد التنفيذ</span>
+                    {% elif backup_setting.status == 'failed' %}
+                        <span class="fail">فشلت العملية</span>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'AppSettings/js/backup-script.js' %}"></script>
+{% endblock backup_ui %}

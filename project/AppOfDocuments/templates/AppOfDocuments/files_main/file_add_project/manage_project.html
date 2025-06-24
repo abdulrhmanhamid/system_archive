@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+{% block manageproject %}
+{% load static %}
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+      * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+     html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: #f0f2f5;
+        }
+
+        
+    body {
+      display: flex;
+      flex-direction: column;
+      margin: 0;	
+      font-family: "Tahoma", sans-serif;
+      background-color: #f9f9f9;
+    }
+    .container {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+            padding: 10px;
+        }
+
+    .top-header {
+      background: linear-gradient(to bottom, #1e6eb8, #045a9c);
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      position: relative;
+    }
+
+    .logo {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      width: 65px;
+    }
+
+    .main-box {
+      margin: 30px auto;
+      width: 100%;  
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      background-color: #ffffff;
+      padding: 10px;
+      box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    }
+
+    .doc-count {
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+          }
+    .section-header {
+      width: 50%;
+      text-align: center;
+      margin-top: 10px;
+      margin-right: 300px;
+      padding: 10px ;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      background-color: #ccc;
+    }
+   
+
+    .search-input {
+      width: 100%;
+      padding: 12px;
+      max-width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      text-align: right;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 25px;
+    }
+
+    table th, table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+      background-color: #fcfcfc;
+      font-size: 14px;
+    }
+
+    table th {
+      background-color: #f5f5f5;
+      font-weight: bold;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .buttons button {
+      background-color: #f1f1f1;
+      border: 1px solid #ccc;
+      padding: 10px 30px;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .buttons button:hover {
+      background-color: #d6e6ff;
+    }
+
+    .radio-cell input[type="radio"] {
+      transform: scale(1.2);
+    }
+    
+    /* إضافة أنميشن للحذف */
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    
+    .fade-out {
+      animation: fadeOut 0.5s ease-out;
+    }
+  </style>
+</head>
+<body>
+
+ <div class="main-box">
+<div class="container">
+  
+    <div class="section-header">
+      عرض مشروع التخرج 
+    </div>
+   
+    <input type="text" class="search-input" placeholder="بحث...." id="searchInput">
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>عنوان المشروع</th>
+          <th>عدد الطلاب</th>
+          <th>اسماء الطلاب</th>
+          <th>اسم المشرف</th>
+          <th>تاريخ التسليم</th>
+          <th>اختيار</th>
+        </tr>
+      </thead>
+      <tbody id="projectsTable">
+        <!-- بيانات المشاريع ستظهر هنا عبر JavaScript -->
+      </tbody>
+    </table>
+
+    <div class="buttons">
+      <button onclick="editProject()">✏️ تعديل</button>
+      <button onclick="deleteProject()">🗑️ حذف</button>
+      <button onclick="window.location.href='/documents/addproject/'">➕ إضافة مشروع</button>
+    </div>
+  </div>
+
+  <script>
+    // متغير لتخزين المشاريع
+    let projectsData = [];
+
+    // تحميل المشاريع عند فتح الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+        loadProjects();
+    });
+
+    // دالة جلب المشاريع من السيرفر
+    function loadProjects() {
+        fetch('/documents/graduation-projects/')
+            .then(response => response.json())
+            .then(data => {
+                projectsData = data;
+                renderProjectsTable(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('حدث خطأ أثناء جلب البيانات');
+            });
+    }
+
+    // دالة عرض المشاريع في الجدول
+    function renderProjectsTable(projects) {
+        const tableBody = document.getElementById("projectsTable");
+        tableBody.innerHTML = "";
+
+        projects.forEach((project, index) => {
+            const row = `
+                <tr data-id="${project.project_id}">
+                    <td>${project.project_id}</td>
+                    <td>${project.project_name}</td>
+                    <td>${project.students_count}</td>
+                    <td>${project.group_names || ''}</td>
+                    <td>${project.supervisor_name || ''}</td>
+                    <td>${project.delivery_date || ''}</td>
+                    <td class="radio-cell">
+                        <input type="radio" name="selectProject" value="${project.project_id}">
+                    </td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    // دالة البحث
+    document.getElementById("searchInput").addEventListener("input", function() {
+        const keyword = this.value.trim().toLowerCase();
+        const filteredProjects = projectsData.filter(project => {
+            return (
+                (project.project_name && project.project_name.toLowerCase().includes(keyword)) ||
+                (project.supervisor_name && project.supervisor_name.toLowerCase().includes(keyword)) ||
+                (project.group_names && project.group_names.toLowerCase().includes(keyword))
+            );
+        });
+        renderProjectsTable(filteredProjects);
+    });
+
+    // دالة الحذف
+    function deleteProject() {
+        const selectedId = document.querySelector('input[name="selectProject"]:checked')?.value;
+        if (!selectedId) {
+            alert("الرجاء اختيار مشروع للحذف");
+            return;
+        }
+
+        if (!confirm("هل أنت متأكد من حذف هذا المشروع؟")) {
+            return;
+        }
+
+        // إضافة أنميشن للحذف
+        const row = document.querySelector(`tr[data-id="${selectedId}"]`);
+        row.classList.add('fade-out');
+        
+        setTimeout(() => {
+            fetch(`/documents/graduation-projects/${selectedId}/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    loadProjects(); // إعادة تحميل البيانات
+                } else {
+                    throw new Error('فشل في حذف المشروع');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message);
+                row.classList.remove('fade-out');
+            });
+        }, 500);
+    }
+
+    // دالة التعديل
+    function editProject() {
+        const selectedId = document.querySelector('input[name="selectProject"]:checked')?.value;
+        if (!selectedId) {
+            alert("الرجاء اختيار مشروع للتعديل");
+            return;
+        }
+        window.location.href = `/documents/editproject/${selectedId}/`;
+    }
+
+    // دالة مساعدة للحصول على cookie
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+  </script>
+
+</body>
+{% endblock manageproject %}
